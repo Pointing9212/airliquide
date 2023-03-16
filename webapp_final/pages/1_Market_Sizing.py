@@ -82,50 +82,37 @@ with col3:
               f.percentage_change(road_2030, road_2040))
 
 
-## Plot
-df_all_stations.sort_index().sort_values(by="label", inplace=True)
-bar_plot_per_region = go.Figure()
-bar_plot_per_region.add_trace(
-    go.Bar(
-        x=df_all_stations.index,
-        y=df_all_stations["count_optimistic"],
-        name="Optimistic",
-        marker_color=df_all_stations.label.map(
-            {
-                "hub": "blue",
-                "road": "lightblue",
-            }
-        ),
-    )
-)
-bar_plot_per_region.add_trace(
-    go.Bar(
-        x=df_all_stations.index,
-        y=df_all_stations["count_moderate"],
-        name="Moderate",
-        marker_color=df_all_stations.label.map(
-            {
-                "hub": "green",
-                "road": "lightgreen",
-            }
-        ),
-    )
-)
-bar_plot_per_region.add_trace(
-    go.Bar(
-        x=df_all_stations.index,
-        y=df_all_stations["count_conservative"],
-        name="Conservative",
-        marker_color=df_all_stations.label.map(
-            {
-                "hub": "yellow",
-                "road": "lightyellow",
-            }
-        ),
-    )
-)
+### Plot
 
-bar_plot_per_region.update_layout(
-    template="plotly", barmode="group", xaxis_tickangle=-45
-)
-st.plotly_chart(bar_plot_per_region)
+df_all_stations.sort_index().sort_values(by="label", inplace=True)
+
+#melted_stations = df_all_stations.melt(var_name='count_', value_name='stations', id_vars='label', ignore_index=False)
+
+fig = go.Figure(data=[go.Bar(name='Optimistic',
+                             x=df_all_stations.index,
+                             y=df_all_stations.count_optimistic,
+                             marker_color=df_all_stations.label.map({"hub": "blue", "road": "lightblue"})),
+                      go.Bar(name='Moderate',
+                             x=df_all_stations.index,
+                             y=df_all_stations.count_moderate,
+                             marker_color=df_all_stations.label.map({"hub": "green", "road": "lightgreen"})),
+                      go.Bar(name='Conservative',
+                             x=df_all_stations.index,
+                             y=df_all_stations.count_conservative,
+                             marker_color=df_all_stations.label.map({"hub": "yellow", "road": "lightyellow"}))
+])
+fig.update_layout(template="plotly", barmode='group') # xaxis_tickangle=-45
+fig.update_yaxes(title_text = "Number of stations (near hubs + along roads)")
+st.plotly_chart(fig)
+
+
+st.subheader("Breakdown of the number of stations by region")
+
+regions = df_all_stations.groupby(['region_name']).sum().rename(columns={"count_optimistic": "Optimistic",
+                                                                         "count_moderate": "Moderate",
+                                                                         "count_conservative": "Conservative"})
+regions.index.names = ['Region']
+
+regions.loc['Total'] = regions.sum(numeric_only=True)
+
+st.dataframe(regions, height=495)
