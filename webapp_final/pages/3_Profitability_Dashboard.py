@@ -33,10 +33,10 @@ final_2040 = final_2040.iloc[:160]
 final_2040["profitability threshold"] = final_2040["profitability threshold"].apply(
     lambda x: min(3, x)
 )
-propriety = 0
 
 col1, col2 = st.columns(2)
 if up_to_year < 2030:
+    print(df_2030.head())#
     col1.metric(
         "total number of stations",
         df_2030[df_2030.construction_year <= up_to_year].shape[0],
@@ -97,7 +97,11 @@ st.subheader("Scenario 2: Oligopoly")
 total_demand_2040 = 876257.7037511724
 
 df_2030 = pd.read_csv("oligopoly_2030.csv")
+df_2030['propriety'] = np.where(df_2030['propriety'] == 1, 'Air Liquide', 'Red Team')
+
 final_2040 = pd.read_csv("oligopoly_2040.csv")
+final_2040['propriety'] = np.where(final_2040['propriety'] == 1, 'Air Liquide', 'Red Team')
+
 col1, col2 = st.columns(2)
 if up_to_year_o < 2030:
     col1.metric(
@@ -112,26 +116,26 @@ if up_to_year_o < 2030:
         "% of demand met in total",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 1, up_to_year_o, total_demand_2030
+                df_2030, 'Air Liquide', up_to_year_o, total_demand_2030
             )
             + prof.compute_oligopoly_cum_demand(
-                df_2030, 0, up_to_year_o, total_demand_2030
+                df_2030, 'Red Team', up_to_year_o, total_demand_2030
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 1, up_to_year_o, total_demand_2030
+                df_2030, 'Air Liquide', up_to_year_o, total_demand_2030
             )
             + prof.compute_oligopoly_cum_demand(
-                df_2030, 0, up_to_year_o, total_demand_2030
+                df_2030, 'Red Team', up_to_year_o, total_demand_2030
             )
             - (
                 prof.compute_oligopoly_cum_demand(
-                    df_2030, 1, up_to_year_o - 1, total_demand_2030
+                    df_2030, 'Air Liquide', up_to_year_o - 1, total_demand_2030
                 )
                 + prof.compute_oligopoly_cum_demand(
-                    df_2030, 0, up_to_year_o - 1, total_demand_2030
+                    df_2030, 'Red Team', up_to_year_o - 1, total_demand_2030
                 )
             )
         )[:4],
@@ -140,16 +144,16 @@ if up_to_year_o < 2030:
         "% of demand met by AirLiquide",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 1, up_to_year_o, total_demand_2030
+                df_2030, 'Air Liquide', up_to_year_o, total_demand_2030
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 1, up_to_year_o, total_demand_2030
+                df_2030, 'Air Liquide', up_to_year_o, total_demand_2030
             )
             - prof.compute_oligopoly_cum_demand(
-                df_2030, 1, up_to_year_o - 1, total_demand_2030
+                df_2030, 'Air Liquide', up_to_year_o - 1, total_demand_2030
             )
         )[:4],
     )
@@ -157,16 +161,16 @@ if up_to_year_o < 2030:
         "% of demand met by Red Team",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 0, up_to_year_o, total_demand_2030
+                df_2030, 'Red Team', up_to_year_o, total_demand_2030
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                df_2030, 0, up_to_year_o, total_demand_2030
+                df_2030, 'Red Team', up_to_year_o, total_demand_2030
             )
             - prof.compute_oligopoly_cum_demand(
-                df_2030, 0, up_to_year_o - 1, total_demand_2030
+                df_2030, 'Red Team', up_to_year_o - 1, total_demand_2030
             )
         )[:4],
     )
@@ -189,26 +193,26 @@ else:
         "% of demand met in total",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 1, up_to_year_o, total_demand_2040
+                final_2040, 'Air Liquide', up_to_year_o, total_demand_2040
             )
             + prof.compute_oligopoly_cum_demand(
-                final_2040, 0, up_to_year_o, total_demand_2040
+                final_2040, 'Red Team', up_to_year_o, total_demand_2040
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 1, up_to_year_o, total_demand_2040
+                final_2040, 'Air Liquide', up_to_year_o, total_demand_2040
             )
             + prof.compute_oligopoly_cum_demand(
-                final_2040, 0, up_to_year_o, total_demand_2040
+                final_2040, 'Red Team', up_to_year_o, total_demand_2040
             )
             - (
                 prof.compute_oligopoly_cum_demand(
-                    final_2040, 1, up_to_year_o - 1, total_demand_2040
+                    final_2040, 'Air Liquide', up_to_year_o - 1, total_demand_2040
                 )
                 + prof.compute_oligopoly_cum_demand(
-                    final_2040, 0, up_to_year_o - 1, total_demand_2040
+                    final_2040, 'Red Team', up_to_year_o - 1, total_demand_2040
                 )
             )
         )[:4],
@@ -217,16 +221,16 @@ else:
         "% of demand met by AirLiquide",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 1, up_to_year_o, total_demand_2040
+                final_2040, 'Air Liquide', up_to_year_o, total_demand_2040
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 1, up_to_year_o, total_demand_2040
+                final_2040, 'Air Liquide', up_to_year_o, total_demand_2040
             )
             - prof.compute_oligopoly_cum_demand(
-                final_2040, 1, up_to_year_o - 1, total_demand_2040
+                final_2040, 'Air Liquide', up_to_year_o - 1, total_demand_2040
             )
         )[:4],
     )
@@ -234,16 +238,16 @@ else:
         "% of demand met by Red Team",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 0, up_to_year_o, total_demand_2040
+                final_2040, 'Red Team', up_to_year_o, total_demand_2040
             )
         )[:4]
         + "%",
         str(
             prof.compute_oligopoly_cum_demand(
-                final_2040, 0, up_to_year_o, total_demand_2040
+                final_2040, 'Red Team', up_to_year_o, total_demand_2040
             )
             - prof.compute_oligopoly_cum_demand(
-                final_2040, 0, up_to_year_o - 1, total_demand_2040
+                final_2040, 'Red Team', up_to_year_o - 1, total_demand_2040
             )
         )[:4],
     )
