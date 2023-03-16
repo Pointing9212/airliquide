@@ -238,34 +238,3 @@ def no_division_by_zero(func):
 @no_division_by_zero
 def percentage_change(old, new):
     return str(np.round((new - old) / old * 100)) + "%"
-
-
-def visualize_on_map_contrast(df_to_plot, contrast="type"):
-    fig = px.scatter_mapbox(
-        df_to_plot,
-        lat="latitude",
-        lon="longitude",
-        zoom=5,
-        height=800,
-        width=800,
-        hover_name="type",
-    )
-
-    if contrast == "type":
-        fig.update_traces(
-            marker_color=df_to_plot.type.map({"hub": "green", "road": "blue"}),
-        )
-    else:
-        fig.update_traces(
-            marker_color=df_to_plot.size_station.map(
-                {"small": "blue", "medium": "green", "large": "orange"}
-            ),
-        )
-    fig.update_traces(
-        marker_size=df_to_plot.size_station.map(
-            {"small": 6, "medium": 12, "large": 18}
-        ),
-    )
-    fig.update_layout(mapbox_style="open-street-map")
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-    return fig
